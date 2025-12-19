@@ -112,9 +112,24 @@ app.put('/api/admin/about', protect, async (req, res) => {
     res.json(data[0]);
 });
 
-app.get('/api/admin/messages', protect, async (req, res) => {
-    const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+// app.get('/api/admin/messages', protect, async (req, res) => {
+//     const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+//     res.json(data);
+// });
+// Get all contact messages (Protected)
+app.get('/api/admin/messages', authenticateToken, async (req, res) => {
+    const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+    if (error) return res.status(400).json(error);
     res.json(data);
 });
 
+// Delete a message (Protected)
+app.delete('/api/admin/messages/:id', authenticateToken, async (req, res) => {
+    const { error } = await supabase.from('messages').delete().eq('id', req.params.id);
+    if (error) return res.status(400).json(error);
+    res.json({ message: "Message deleted" });
+});
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
