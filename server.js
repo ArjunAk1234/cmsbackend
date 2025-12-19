@@ -117,7 +117,7 @@ app.put('/api/admin/about', protect, async (req, res) => {
 //     res.json(data);
 // });
 // Get all contact messages (Protected)
-app.get('/api/admin/messages', authenticateToken, async (req, res) => {
+app.get('/api/admin/messages',  async (req, res) => {
     const { data, error } = await supabase
         .from('messages')
         .select('*')
@@ -127,7 +127,7 @@ app.get('/api/admin/messages', authenticateToken, async (req, res) => {
 });
 
 // Delete a message (Protected)
-app.delete('/api/admin/messages/:id', authenticateToken, async (req, res) => {
+app.delete('/api/admin/messages/:id', async (req, res) => {
     const { error } = await supabase.from('messages').delete().eq('id', req.params.id);
     if (error) return res.status(400).json(error);
     res.json({ message: "Message deleted" });
